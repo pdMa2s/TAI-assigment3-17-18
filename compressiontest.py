@@ -57,13 +57,19 @@ if __name__ == '__main__':
     all_reference_files = [[image_file for image_file in all_target_files if path.basename(dir) == path.basename(path.dirname(image_file.folder))][:3] for dir in list_dir]
 
     list_subject = []
+    ncd_results = []
+    initial_files = 0
+    final_files = 3
     for dir in list_dir:
         list_ref_files = all_reference_files[list_dir.index(dir)]
         subject = Subject(dir, 3, list_ref_files)
+        ncd = NCD(all_target_files, list_ref_files, compressor)
+        ncd_results.append(ncd.get_array_files_ncd())
         list_subject.append(subject)
 
     for i in list_subject:
         print(i)
+    print(ncd_results)
     """
     file_content = read_file_content("s01/01.pgm")
 
