@@ -51,16 +51,20 @@ if __name__ == '__main__':
     all_target_files.sort(key=lambda x: x.folder)
 
     list_subject = []
-    inittial_files = 0
+    ncd_results = []
+    initial_files = 0
     final_files = 3
     for dir in list_dir:
-        list_ref_files = [image_file for image_file in all_target_files[inittial_files:final_files]]
+        list_ref_files = [image_file for image_file in all_target_files[initial_files:final_files]]
         subject = Subject(dir, 3, list_ref_files)
+        ncd = NCD(all_target_files, list_ref_files, compressor)
+        ncd_results.append(ncd.get_array_files_ncd())
         list_subject.append(subject)
-        inittial_files += 10
+        initial_files += 10
         final_files += 10
     for i in list_subject:
         print(i)
+    print(ncd_results)
     """
     file_content = read_file_content("s01/01.pgm")
 
