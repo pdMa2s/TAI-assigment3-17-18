@@ -31,9 +31,14 @@ def compress_file_zlib(content):
 def read_file_content(file_path):
     return open('orl_faces/'+ file_path, 'rb').read()
 
+def is_directory(directory):
+    if not path.isdir(directory):
+        parser.error("The directory %s does not exist!" % directory)
+    return directory
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
     parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zip'])
     args = parser.parse_args()
 
@@ -44,21 +49,19 @@ if __name__ == '__main__':
                    'zip': compress_file_zlib}
     compressor = compressors[compressor_name]
 
-    list_dir = [path.join("orl_faces", f) for f in listdir("orl_faces") if path.isdir(path.join("orl_faces", f))]
+    list_dir = [path.join(args.directory, f) for f in listdir(args.directory) if path.isdir(path.join(args.directory, f))]
     list_dir.sort()
 
     all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
     all_target_files.sort(key=lambda x: x.folder)
+    all_reference_files = [[image_file for image_file in all_target_files if path.basename(dir) == path.basename(path.dirname(image_file.folder))][:3] for dir in list_dir]
 
     list_subject = []
-    inittial_files = 0
-    final_files = 3
     for dir in list_dir:
-        list_ref_files = [image_file for image_file in all_target_files[inittial_files:final_files]]
+        list_ref_files = all_reference_files[list_dir.index(dir)]
         subject = Subject(dir, 3, list_ref_files)
         list_subject.append(subject)
-        inittial_files += 10
-        final_files += 10
+
     for i in list_subject:
         print(i)
     """
