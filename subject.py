@@ -7,9 +7,11 @@ class Subject():
         self.id_subject = str(path.basename(folder_subject))
         self.num_ref_files = num_ref_files
         self.array_ref_files = list_ref_files
+        self.candidates = []
 
     def __str__(self) -> str:
         return str(self.id_subject)+str([image_file.folder for image_file in self.array_ref_files])
 
-
+    def add_candidate(self, candidate):
+        self.candidates.append(candidate)
 

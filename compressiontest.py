@@ -47,10 +47,12 @@ if __name__ == '__main__':
                    'bzip2': compress_file_bz2,
                    'lzma': compress_file_lzma,
                    'zip': compress_file_zlib}
+
     compressor = compressors[compressor_name]
 
     list_dir = [path.join(args.directory, f) for f in listdir(args.directory) if path.isdir(path.join(args.directory, f))]
     list_dir.sort()
+    
 
     all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
     all_target_files.sort(key=lambda x: x.folder)
@@ -61,15 +63,13 @@ if __name__ == '__main__':
     for dir in list_dir:
         list_ref_files = all_reference_files[list_dir.index(dir)]
         subject = Subject(dir, 3, list_ref_files)
-        ncd = NCD(all_target_files, list_ref_files, compressor)
+        ncd = NCD(all_target_files, list_ref_files, compressor, 0)
         ncd_results.append(ncd.get_array_files_ncd())
         list_subject.append(subject)
 
-    for i in list_subject:
-        print(i)
-        break
     for i in range(0, len(ncd_results)):
-        print(ncd_results[i])
+        for j in ncd_results[i]:
+            print(str(j) + " : " + str(ncd_results[i][j]))
         break
     """
     file_content = read_file_content("s01/01.pgm")
