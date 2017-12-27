@@ -45,6 +45,6 @@ if __name__ == '__main__':
         print("compressor " + c_name + ": " + str(len(compressor(file_content))))
         list_subject = []
         for dir in list_dir:
-            subject = Subject(dir, 3)
+            subject = Subject(dir, 3, compressor)
             list_subject.append(subject)
         print(list_subject[0])
