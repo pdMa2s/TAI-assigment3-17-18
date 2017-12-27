@@ -4,8 +4,6 @@ import gzip
 import lzma
 import zlib
 from os import listdir, path
-from itertools import product
-
 from image_file import ImageFile
 from ncd import NCD
 
@@ -60,8 +58,6 @@ if __name__ == '__main__':
 
     list_subject = []
     ncd_results = []
-    initial_files = 0
-    final_files = 3
     for dir in list_dir:
         list_ref_files = all_reference_files[list_dir.index(dir)]
         subject = Subject(dir, 3, list_ref_files)
