@@ -3,6 +3,8 @@ import gzip
 import lzma
 import zlib
 from os import listdir, path
+from itertools import product
+from ncd import NCD
 
 from subject import Subject
 
@@ -29,7 +31,6 @@ def read_file_content(file_path):
 
 if __name__ == '__main__':
     list_dir = [path.join("orl_faces",f) for f in listdir("orl_faces") if path.isdir(path.join("orl_faces", f))]
-    print(list_dir)
 
     file_content = read_file_content("s01/01.pgm")
     compressors = {'gzip': compress_file_gzip,
@@ -39,7 +40,8 @@ if __name__ == '__main__':
     print("original:", len(file_content))
 
     all_target_files = [path.join(dir, f) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
-    print(all_target_files)
+    print("Target files:", all_target_files)
+    all_target_combinations = list(product(all_target_files, repeat=2))
 
     for c_name, compressor in compressors.items():
         print("compressor " + c_name + ": " + str(len(compressor(file_content))))
@@ -47,4 +49,9 @@ if __name__ == '__main__':
         for dir in list_dir:
             subject = Subject(dir, 3, compressor)
             list_subject.append(subject)
-        print(list_subject[0])
+        print(list_subject[1])
+
+    ncd = NCD(all_target_files, all_target_combinations, compressors['gzip'])
+    res = ncd.get_array_files_ncd()
+    #print(res)
+    print("{}: {}".format('gzip', res[('orl_faces/s22/05.pgm', 'orl_faces/s22/05.pgm')]))
