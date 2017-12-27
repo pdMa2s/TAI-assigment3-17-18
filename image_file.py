@@ -1,6 +1,5 @@
 
 class ImageFile:
-
     def __init__(self, folder, compressor):
         self.folder = folder
         self.content = open(folder, 'rb').read()

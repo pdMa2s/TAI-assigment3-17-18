@@ -31,10 +31,12 @@ def compress_file_zlib(content):
 def read_file_content(file_path):
     return open('orl_faces/'+ file_path, 'rb').read()
 
+
 def is_directory(directory):
     if not path.isdir(directory):
         parser.error("The directory %s does not exist!" % directory)
     return directory
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -69,7 +71,10 @@ if __name__ == '__main__':
 
     for i in list_subject:
         print(i)
-    print(ncd_results)
+        break
+    for i in range(0, len(ncd_results)):
+        print(ncd_results[i])
+        break
     """
     file_content = read_file_content("s01/01.pgm")
 
