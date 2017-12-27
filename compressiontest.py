@@ -38,10 +38,13 @@ if __name__ == '__main__':
                    'zlib': compress_file_zlib}
     print("original:", len(file_content))
 
+    all_target_files = [path.join(dir, f) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
+    print(all_target_files)
+
     for c_name, compressor in compressors.items():
         print("compressor " + c_name + ": " + str(len(compressor(file_content))))
         list_subject = []
         for dir in list_dir:
-            subject = Subject(dir, 3, compressor)
+            subject = Subject(dir, 3)
             list_subject.append(subject)
         print(list_subject[0])
