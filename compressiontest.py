@@ -68,8 +68,8 @@ def create_refs_and_subjects(directory_in_str, compressor):
             subjects.append(new_subject)
     return refs, subjects
 
-
-
+def handle_means(means):
+    return sum(means)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -83,20 +83,15 @@ if __name__ == '__main__':
     list_dir = [path.join(args.directory, f) for f in listdir(args.directory) if path.isdir(path.join(args.directory, f))]
     list_dir.sort()
 
-    all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
-    all_target_files.sort(key=lambda x: x.folder)
-    all_reference_files = [[image_file for image_file in all_target_files if path.basename(dir) == path.basename(path.dirname(image_file.folder))][:3] for dir in list_dir]
+    #all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
+    #all_target_files.sort(key=lambda x: x.folder)
+    #all_reference_files = [[image_file for image_file in all_target_files if path.basename(dir) == path.basename(path.dirname(image_file.folder))][:3] for dir in list_dir]
 
-    list_subject = []
-    ncd_results = []
-    for dir in list_dir:
-        list_ref_files = all_reference_files[list_dir.index(dir)]
-        subject = Subject(dir, 3, list_ref_files)
-        ncd = NCD(all_target_files, list_ref_files, compressor, 0)
-        ncd_results.append(ncd.get_array_files_ncd())
-        list_subject.append(subject)
+    test_results = {}
+    for ref in references:
+        for sub in subjects:
+            means = NCD(sub.test_files, references[ref], compressor).mean_ncd()
+            processed_means = handle_means(means)
+        test_results[ref] = {sub: processed_means}
+    print(test_results)
 
-    for i in range(0, len(ncd_results)):
-        for j in ncd_results[i]:
-            print(str(j) + " : " + str(ncd_results[i][j]))
-        break
