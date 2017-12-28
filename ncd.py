@@ -28,18 +28,18 @@ class NCD:
             self.array_files_ncd[(x, y)] = ncd"""
 
     def mean_ncd(self):
-        ref_totals = {}
+        list_ncd_mean = []
         for targ in self.target_files:
             y = targ.compress_file_size
+            ncd_total = 0
             for ref in self.ref_files:
                 concat_size = len(self.compressor(ref.content + targ.content))
                 x = ref.compress_file_size
                 ncd = self.ncd(concat_size,x, y)
-                if ref in ref_totals:
-                    ref_totals[ref] += ncd
-                else:
-                    ref_totals[ref] = ncd
-        return [total/(len(self.target_files)) for r, total in ref_totals.items()]
+                ncd_total += ncd
+            ncd_total /= len(self.ref_files)
+            list_ncd_mean.append((targ, ncd_total))
+        return list_ncd_mean
 
     """def get_array_files_ncd(self):
         return self.array_files_ncd"""

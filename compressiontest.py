@@ -3,7 +3,6 @@ import bz2
 import gzip
 import lzma
 import zlib
-from os import listdir, path
 from image_file import ImageFile
 from ncd import NCD
 import os
@@ -39,7 +38,7 @@ def parse_compressor(c_name):
 
 
 def is_directory(directory):
-    if not path.isdir(directory):
+    if not os.path.isdir(directory):
         parser.error("The directory %s does not exist!" % directory)
     return directory
 
@@ -51,7 +50,7 @@ def create_refs_and_subjects(directory_in_str, compressor):
 
     for dir in os.listdir(general_directory):
         dir_name = os.fsdecode(dir)
-        sub_dir = path.join(directory_in_str, dir_name)
+        sub_dir = os.path.join(directory_in_str, dir_name)
         if os.path.isdir(sub_dir):
             imgs = os.listdir(sub_dir)
             imgs.sort()
@@ -59,7 +58,7 @@ def create_refs_and_subjects(directory_in_str, compressor):
             new_subject = Subject(dir_name)
 
             for i in imgs:
-                img_dir = path.join(sub_dir, i)
+                img_dir = os.path.join(sub_dir, i)
                 file = ImageFile(img_dir, compressor)
                 if len(image_files) < 3:
                     image_files.append(file)
@@ -82,20 +81,28 @@ if __name__ == '__main__':
     compressor = parse_compressor(args.compressor)
     references, subjects = create_refs_and_subjects(args.directory, compressor)
 
-    list_dir = [path.join(args.directory, f) for f in listdir(args.directory) if path.isdir(path.join(args.directory, f))]
-    list_dir.sort()
-
-    #all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
-    #all_target_files.sort(key=lambda x: x.folder)
-    #all_reference_files = [[image_file for image_file in all_target_files if path.basename(dir) == path.basename(path.dirname(image_file.folder))][:3] for dir in list_dir]
-
     test_results = {}
     for ref in references:
         test_results[ref] = []
         for sub in subjects:
             means = NCD(sub.test_files, references[ref], compressor).mean_ncd()
-            processed_means = handle_means(means)
-            test_results[ref].append((sub, processed_means))
+            test_results[ref] += means
+    #print(test_results)
 
-    print(test_results)
+    dic_min = {}
+    for subject, list_results in test_results.items():
+        for image, ndc in list_results:
+            value = (subject, ndc)
+            if image in dic_min.keys():
+                value = dic_min[image]
+                if value[1] > ndc:
+                    dic_min[image] = (subject, ndc)
+            else:
+                dic_min[image] = (subject, ndc)
 
+    print(dic_min)
+
+    for sub in subjects:
+        [sub.add_candidate(list_subject_min_ndc[0]) for image, list_subject_min_ndc in dic_min.items()
+                          if image in sub.test_files]
+        print(sub.id_subject,sub.candidates)
