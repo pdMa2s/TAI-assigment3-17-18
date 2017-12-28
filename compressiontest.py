@@ -94,8 +94,8 @@ if __name__ == '__main__':
     for subject, list_results in test_results.items():
         for image, ncd in list_results:
             if image in dic_min.keys():
-                value = dic_min[image]
-                if value[1] > ncd:
+                value = dic_min[image][1]
+                if value > ncd:
                     dic_min[image] = (subject, ncd)
             else:
                 dic_min[image] = (subject, ncd)
@@ -106,6 +106,7 @@ if __name__ == '__main__':
     for sub in subjects:
         all_test_file_of_subject = [list_subject_min_ncd[0] for image, list_subject_min_ncd in dic_min.items()
                           if image in sub.test_files]
+        print(all_test_file_of_subject)
         for candidate in all_test_file_of_subject:
             sub.add_candidate(candidate)
             subject_predicted_id = int(re.search(r'\d+', candidate).group())
