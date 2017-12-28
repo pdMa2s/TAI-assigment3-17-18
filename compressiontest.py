@@ -3,6 +3,7 @@ import bz2
 import gzip
 import lzma
 import zlib
+import re
 from image_file import ImageFile
 from ncd import NCD
 import os
@@ -100,9 +101,29 @@ if __name__ == '__main__':
             else:
                 dic_min[image] = (subject, ndc)
 
-    print(dic_min)
+    #print(dic_min)
 
+    matrix_confusion = [[0 for i in range(len(subjects))] for j in range(len(subjects))]
     for sub in subjects:
-        [sub.add_candidate(list_subject_min_ndc[0]) for image, list_subject_min_ndc in dic_min.items()
+        all_test_file_of_subject = [list_subject_min_ndc[0] for image, list_subject_min_ndc in dic_min.items()
                           if image in sub.test_files]
-        print(sub.id_subject,sub.candidates)
+        for candidate in all_test_file_of_subject:
+            sub.add_candidate(candidate)
+            subject_predicted_id = int(re.search(r'\d+', candidate).group())
+            subject_real_id = int(re.search(r'\d+', sub.id_subject).group())
+            matrix_confusion[subject_predicted_id-1][subject_real_id-1] += 1
+
+    #print(matrix_confusion)
+
+    total = sum([sum(f) for f in matrix_confusion])
+    avg_accuracy = 0
+    for i in range(len(subjects)):
+        tp = matrix_confusion[i][i]
+        fp = sum(matrix_confusion[i])-tp
+        fn = sum([d[0] for d in matrix_confusion])-tp
+        tn = total - (tp+fp+fn)
+        accuracy_subject = ((tp+tn)/total)*100
+        subjects[i].set_accuracy(accuracy_subject)
+        print(subjects[i].print_statistics())
+        avg_accuracy += accuracy_subject
+    print("Average accuracy: "+str(avg_accuracy/len(subjects))+"%")
