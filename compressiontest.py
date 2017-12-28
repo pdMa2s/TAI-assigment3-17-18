@@ -6,7 +6,7 @@ import zlib
 from os import listdir, path
 from image_file import ImageFile
 from ncd import NCD
-
+import os
 from subject import Subject
 
 
@@ -30,10 +30,45 @@ def read_file_content(file_path):
     return open('orl_faces/'+ file_path, 'rb').read()
 
 
+def parse_compressor(c_name):
+    compressors = {'gzip': compress_file_gzip,
+                   'bzip2': compress_file_bz2,
+                   'lzma': compress_file_lzma,
+                   'zip': compress_file_zlib}
+    return compressors[c_name]
+
+
 def is_directory(directory):
     if not path.isdir(directory):
         parser.error("The directory %s does not exist!" % directory)
     return directory
+
+
+def create_refs_and_subjects(directory_in_str, compressor):
+    refs = {}
+    subjects = []
+    general_directory = os.fsencode(directory_in_str)
+
+    for dir in os.listdir(general_directory):
+        dir_name = os.fsdecode(dir)
+        sub_dir = path.join(directory_in_str, dir_name)
+        if os.path.isdir(sub_dir):
+            imgs = os.listdir(sub_dir)
+            imgs.sort()
+            image_files = []
+            new_subject = Subject(dir_name)
+
+            for i in imgs:
+                img_dir = path.join(sub_dir, i)
+                file = ImageFile(img_dir, compressor)
+                if len(image_files) < 3:
+                    image_files.append(file)
+                new_subject.add_test_file(file)
+            refs[dir_name] = image_files
+            subjects.append(new_subject)
+    return refs, subjects
+
+
 
 
 if __name__ == '__main__':
@@ -42,17 +77,11 @@ if __name__ == '__main__':
     parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zip'])
     args = parser.parse_args()
 
-    compressor_name = args.compressor
-    compressors = {'gzip': compress_file_gzip,
-                   'bzip2': compress_file_bz2,
-                   'lzma': compress_file_lzma,
-                   'zip': compress_file_zlib}
-
-    compressor = compressors[compressor_name]
+    compressor = parse_compressor(args.compressor)
+    references, subjects = create_refs_and_subjects(args.directory, compressor)
 
     list_dir = [path.join(args.directory, f) for f in listdir(args.directory) if path.isdir(path.join(args.directory, f))]
     list_dir.sort()
-    
 
     all_target_files = [ImageFile(path.join(dir, f), compressor) for dir in list_dir for f in listdir(dir) if path.isfile(path.join(dir, f))]
     all_target_files.sort(key=lambda x: x.folder)
@@ -71,25 +100,3 @@ if __name__ == '__main__':
         for j in ncd_results[i]:
             print(str(j) + " : " + str(ncd_results[i][j]))
         break
-    """
-    file_content = read_file_content("s01/01.pgm")
-
-    print("original:", len(file_content))
-
-    print("Target files:", all_target_files)
-    #all_target_combinations = list(product(all_target_files, repeat=2))
-
-    for c_name, compressor in compressors.items():
-        print("compressor " + c_name + ": " + str(len(compressor(file_content))))
-        list_subject = []
-        for dir in list_dir:
-            subject = Subject(dir, 3, compressor)
-            list_subject.append(subject)
-        print(list_subject[1])
-        break
-
-    #ncd = NCD(all_target_files, all_target_combinations, compressors['gzip'])
-    #res = ncd.get_array_files_ncd()
-    #print(res)
-    #print("{}: {}".format('gzip', res[('orl_faces/s22/05.pgm', 'orl_faces/s22/05.pgm')]))
-    """
