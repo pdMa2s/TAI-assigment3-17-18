@@ -24,4 +24,4 @@ class Subject():
         self.accuracy = accuracy
 
     def print_statistics(self):
-        return str(self.id_subject) + " " + str(self.candidates) + " Accuracy: "+str(self.accuracy) +"%"
+        return str(self.id_subject) + " " + str(self.candidates) + " Accuracy: "+str.format('%.2f' % self.accuracy) +"%"

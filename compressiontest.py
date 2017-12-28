@@ -92,20 +92,19 @@ if __name__ == '__main__':
 
     dic_min = {}
     for subject, list_results in test_results.items():
-        for image, ndc in list_results:
-            value = (subject, ndc)
+        for image, ncd in list_results:
             if image in dic_min.keys():
                 value = dic_min[image]
-                if value[1] > ndc:
-                    dic_min[image] = (subject, ndc)
+                if value[1] > ncd:
+                    dic_min[image] = (subject, ncd)
             else:
-                dic_min[image] = (subject, ndc)
+                dic_min[image] = (subject, ncd)
 
     #print(dic_min)
 
     matrix_confusion = [[0 for i in range(len(subjects))] for j in range(len(subjects))]
     for sub in subjects:
-        all_test_file_of_subject = [list_subject_min_ndc[0] for image, list_subject_min_ndc in dic_min.items()
+        all_test_file_of_subject = [list_subject_min_ncd[0] for image, list_subject_min_ncd in dic_min.items()
                           if image in sub.test_files]
         for candidate in all_test_file_of_subject:
             sub.add_candidate(candidate)
@@ -113,7 +112,7 @@ if __name__ == '__main__':
             subject_real_id = int(re.search(r'\d+', sub.id_subject).group())
             matrix_confusion[subject_predicted_id-1][subject_real_id-1] += 1
 
-    #print(matrix_confusion)
+    print(matrix_confusion)
 
     total = sum([sum(f) for f in matrix_confusion])
     avg_accuracy = 0
@@ -126,4 +125,4 @@ if __name__ == '__main__':
         subjects[i].set_accuracy(accuracy_subject)
         print(subjects[i].print_statistics())
         avg_accuracy += accuracy_subject
-    print("Average accuracy: "+str(avg_accuracy/len(subjects))+"%")
+    print("Average accuracy: "+str.format('%.2f' % float(avg_accuracy/len(subjects)))+"%")
