@@ -68,8 +68,10 @@ def create_refs_and_subjects(directory_in_str, compressor):
             subjects.append(new_subject)
     return refs, subjects
 
+
 def handle_means(means):
     return sum(means)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -89,9 +91,11 @@ if __name__ == '__main__':
 
     test_results = {}
     for ref in references:
+        test_results[ref] = []
         for sub in subjects:
             means = NCD(sub.test_files, references[ref], compressor).mean_ncd()
             processed_means = handle_means(means)
-        test_results[ref] = {sub: processed_means}
+            test_results[ref].append((sub, processed_means))
+
     print(test_results)
 
