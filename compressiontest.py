@@ -93,7 +93,7 @@ if __name__ == '__main__':
     dic_min = {}
     for subject, list_results in test_results.items():
         for image, ndc in list_results:
-            value = (subject, ndc)
+            #value = (subject, ndc)
             if image in dic_min.keys():
                 value = dic_min[image]
                 if value[1] > ndc:
