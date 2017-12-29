@@ -1,48 +1,12 @@
 import argparse
-import bz2
-import gzip
-import lzma
-import zlib
 import re
-from io import BytesIO
 from image_file import ImageFile
 from ncd import NCD
 import os
 from subject import Subject
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-def compress_file_gzip(content,compression_level=9):
-    return gzip.compress(content, compresslevel=compression_level)
-
-
-def compress_file_bz2(content, compression_level=9):
-    return bz2.compress(content, compresslevel=compression_level)
-
-
-def compress_file_lzma(content,compression_level=9):
-    return lzma.compress(content)
-
-
-def compress_file_zlib(content, compression_level=9):
-    return zlib.compress(content, level=compression_level)
-
-
-def compress_file_jpeg_png(image, type):
-    buffer = BytesIO()
-    image.save(buffer, type)
-    return buffer.tell()
-
-
-def parse_compressor(c_name):
-    compressors = {'gzip': compress_file_gzip,
-                   'bzip2': compress_file_bz2,
-                   'lzma': compress_file_lzma,
-                   'zlib': compress_file_zlib,
-                   'jpeg': compress_file_jpeg_png,
-                   'png': compress_file_jpeg_png}
-    return compressors[c_name]
+import compressors
 
 
 def is_directory(directory):
@@ -123,7 +87,7 @@ def parse_args():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parse_args()
-    compressor = parse_compressor(args.compressor)
+    compressor = compressors.parse_compressor(args.compressor)
     nr_reference_files = int(args.nrReferenceFiles)
     references, subjects = create_refs_and_subjects(args.directory, compressor, args.compressor, nr_reference_files)
 
