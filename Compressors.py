@@ -13,7 +13,7 @@ def compress_file_bz2(content, compression_level=9):
     return bz2.compress(content, compresslevel=compression_level)
 
 
-def compress_file_lzma(content,compression_level=9):
+def compress_file_lzma(content):
     return lzma.compress(content)
 
 
