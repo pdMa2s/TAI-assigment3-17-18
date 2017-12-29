@@ -4,6 +4,8 @@ import gzip
 import lzma
 import zlib
 import re
+from io import BytesIO
+from PIL import Image
 from image_file import ImageFile
 from ncd import NCD
 import os
@@ -27,16 +29,18 @@ def compress_file_lzma(content,compression_level=9):
 def compress_file_zlib(content, compression_level=9):
     return zlib.compress(content, level=compression_level)
 
-
-def read_file_content(file_path):
-    return open('orl_faces/'+ file_path, 'rb').read()
-
+def compress_file_jpeg_png(image, type):
+    buffer = BytesIO()
+    image.save(buffer, type)
+    return buffer.tell()
 
 def parse_compressor(c_name):
     compressors = {'gzip': compress_file_gzip,
                    'bzip2': compress_file_bz2,
                    'lzma': compress_file_lzma,
-                   'zlib': compress_file_zlib}
+                   'zlib': compress_file_zlib,
+                   'jpeg': compress_file_jpeg_png,
+                   'png': compress_file_jpeg_png}
     return compressors[c_name]
 
 
@@ -46,7 +50,7 @@ def is_directory(directory):
     return directory
 
 
-def create_refs_and_subjects(directory_in_str, compressor, nr_refs_files):
+def create_refs_and_subjects(directory_in_str, compressor, compressor_type, nr_refs_files):
     refs = {}
     subjects = []
     general_directory = os.fsencode(directory_in_str)
@@ -62,18 +66,14 @@ def create_refs_and_subjects(directory_in_str, compressor, nr_refs_files):
 
             for i in imgs:
                 img_dir = os.path.join(sub_dir, i)
-                file = ImageFile(img_dir, compressor)
+                file = ImageFile(img_dir, compressor, compressor_type)
                 if len(image_files) < nr_refs_files:
                     image_files.append(file)
-                new_subject.add_test_file(file)
+                else:
+                    new_subject.add_test_file(file)
             refs[dir_name] = image_files
             subjects.append(new_subject)
     return refs, subjects
-
-
-def handle_means(means):
-    return sum(means)
-
 
 def plot_matrix(matrix):
     H = np.array(matrix)
@@ -101,13 +101,13 @@ def check_nr_ref_files(nr_refs):
 def parse_args():
 
     parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
-    parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zlib'])
+    parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zlib', 'jpeg', 'png'])
     """parser.add_argument("-cl", "--compresslevel", help="The compresslevel argument is an integer from 1 to 9 controlling " +
                                                "the level of compression; 1 is fastest and produces the least" +
                                                " compression, and 9 is slowest and produces the most compression." +
                                                " The default is 9"
                                                 , default=9)"""
-    parser.add_argument("-nr", "--nrReferenceFiles", help="compressor to be used", default=3)
+    parser.add_argument("-nr", "--nrReferenceFiles", help="number of reference files to be used", default=3)
 
     args = parser.parse_args()
 
@@ -120,13 +120,13 @@ if __name__ == '__main__':
     args = parse_args()
     compressor = parse_compressor(args.compressor)
     nr_reference_files = int(args.nrReferenceFiles)
-    references, subjects = create_refs_and_subjects(args.directory, compressor, nr_reference_files)
+    references, subjects = create_refs_and_subjects(args.directory, compressor, args.compressor, nr_reference_files)
 
     test_results = {}
     for ref in references:
         test_results[ref] = []
         for sub in subjects:
-            means = NCD(sub.test_files, references[ref], compressor).mean_ncd()
+            means = NCD(sub.test_files, references[ref], compressor, args.compressor).mean_ncd()
             test_results[ref] += means
     #print(test_results)
 
@@ -155,19 +155,19 @@ if __name__ == '__main__':
 
     total = sum([sum(f) for f in matrix_confusion])
     avg_accuracy = 0
-    avg_precision = 0
+    avg_recall = 0
     for i in range(len(subjects)):
         tp = matrix_confusion[i][i]
         fp = sum(matrix_confusion[i])-tp
         fn = sum([d[0] for d in matrix_confusion])-tp
         tn = total - (tp+fp+fn)
         accuracy_subject = ((tp+tn)/total)*100
-        precision_subject = (tp/(tp + fp))*100
-        subjects[i].set_precision(precision_subject)
+        recall_subject = (tp/(tp + fn))*100 if tp + fn != 0 else 0
         subjects[i].set_accuracy(accuracy_subject)
+        subjects[i].set_recall(recall_subject)
         print(subjects[i].print_statistics())
         avg_accuracy += accuracy_subject
-        avg_precision += precision_subject
-    print("Average precision: " + str.format('%.2f' % float(avg_precision / len(subjects))) + "%")
+        avg_recall += recall_subject
+    print("Average recall: "+str.format('%.2f' % float(avg_recall/len(subjects)))+"%")
     print("Average accuracy: "+str.format('%.2f' % float(avg_accuracy/len(subjects)))+"%")
     plot_matrix(matrix_confusion)

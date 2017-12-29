@@ -4,8 +4,9 @@ class Subject:
         self.id_subject = subject_id
         self.test_files = []
         self.candidates = []
-        self.accuracy = 0
+        self.accuracy = -1
         self.precision = -1
+        self.recall = -1
 
     def __str__(self) -> str:
         return self.id_subject
@@ -22,10 +23,10 @@ class Subject:
     def set_accuracy(self, accuracy):
         self.accuracy = accuracy
 
-    def set_precision(self, precision):
-        self.precision = precision
+    def set_recall(self, recall):
+        self.recall = recall
 
     def print_statistics(self):
-        return str(self.id_subject) + " " + str(self.candidates) + " Precision: "\
-               + str.format('%.2f' % self.precision) + "%" + " Accuracy: "\
+        return str(self.id_subject) + " " + str(self.candidates) + " Recall: "\
+               + str.format('%.2f' % self.recall) + "%" + " Accuracy: "\
                + str.format('%.2f' % self.accuracy) + "%"
