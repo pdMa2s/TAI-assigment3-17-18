@@ -8,7 +8,8 @@ from image_file import ImageFile
 from ncd import NCD
 import os
 from subject import Subject
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 def compress_file_gzip(content):
     return gzip.compress(content)
@@ -73,6 +74,24 @@ def handle_means(means):
     return sum(means)
 
 
+def plot_matrix(matrix):
+    H = np.array(matrix)
+    fig = plt.figure(figsize=(10, 6), dpi=90)
+
+    ax = fig.add_subplot(111)
+    ax.set_title('confusion matrix')
+    plt.imshow(H)
+    ax.set_aspect('equal')
+
+    cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
+    cax.get_xaxis().set_visible(False)
+    cax.get_yaxis().set_visible(False)
+    cax.patch.set_alpha(0)
+    cax.set_frame_on(False)
+    plt.colorbar(orientation='vertical')
+    plt.show()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
@@ -92,28 +111,26 @@ if __name__ == '__main__':
 
     dic_min = {}
     for subject, list_results in test_results.items():
-        for image, ndc in list_results:
-            #value = (subject, ndc)
+        for image, ncd in list_results:
             if image in dic_min.keys():
-                value = dic_min[image]
-                if value[1] > ndc:
-                    dic_min[image] = (subject, ndc)
+                value = dic_min[image][1]
+                if value > ncd:
+                    dic_min[image] = (subject, ncd)
             else:
-                dic_min[image] = (subject, ndc)
+                dic_min[image] = (subject, ncd)
 
-    #print(dic_min)
+    print(dic_min)
 
     matrix_confusion = [[0 for i in range(len(subjects))] for j in range(len(subjects))]
     for sub in subjects:
-        all_test_file_of_subject = [list_subject_min_ndc[0] for image, list_subject_min_ndc in dic_min.items()
+        all_test_file_of_subject = [list_subject_min_ncd[0] for image, list_subject_min_ncd in dic_min.items()
                           if image in sub.test_files]
+        #print(all_test_file_of_subject)
         for candidate in all_test_file_of_subject:
-            sub.add_candidate(candidate)
+            sub.add_candidate(candidate)   
             subject_predicted_id = int(re.search(r'\d+', candidate).group())
             subject_real_id = int(re.search(r'\d+', sub.id_subject).group())
             matrix_confusion[subject_predicted_id-1][subject_real_id-1] += 1
-
-    #print(matrix_confusion)
 
     total = sum([sum(f) for f in matrix_confusion])
     avg_accuracy = 0
@@ -126,4 +143,5 @@ if __name__ == '__main__':
         subjects[i].set_accuracy(accuracy_subject)
         print(subjects[i].print_statistics())
         avg_accuracy += accuracy_subject
-    print("Average accuracy: "+str(avg_accuracy/len(subjects))+"%")
+    print("Average accuracy: "+str.format('%.2f' % float(avg_accuracy/len(subjects)))+"%")
+    plot_matrix(matrix_confusion)
