@@ -1,12 +1,12 @@
 import argparse
 import re
-from image_file import ImageFile
-from ncd import NCD
+from ImageFile import ImageFile
+from NCD import NCD
 import os
-from subject import Subject
+from Subject import Subject
 import matplotlib.pyplot as plt
 import numpy as np
-import compressors
+import Compressors
 
 
 def is_directory(directory):
@@ -87,7 +87,7 @@ def parse_args():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parse_args()
-    compressor = compressors.parse_compressor(args.compressor)
+    compressor = Compressors.parse_compressor(args.compressor)
     nr_reference_files = int(args.nrReferenceFiles)
     references, subjects = create_refs_and_subjects(args.directory, compressor, args.compressor, nr_reference_files)
 
