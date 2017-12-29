@@ -93,8 +93,8 @@ def plot_matrix(matrix):
     plt.show()
 
 
-def check_nr_ref_files(args):
-    if int(args.nrReferenceFiles) > 10 or int(args.nrReferenceFiles) < 1:
+def check_nr_ref_files(nr_refs):
+    if nr_refs > 10 or nr_refs < 1:
         print("Invalid number of reference files!")
         exit(1)
 
@@ -110,7 +110,8 @@ def parse_args():
     parser.add_argument("-nr", "--nrReferenceFiles", help="compressor to be used", default=3)
 
     args = parser.parse_args()
-    check_nr_ref_files(args)
+
+    check_nr_ref_files(int(args.nrReferenceFiles))
     return args
 
 
