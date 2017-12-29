@@ -1,12 +1,11 @@
-from os import listdir, path
-
-class Subject():
+class Subject:
 
     def __init__(self, subject_id):
         self.id_subject = subject_id
         self.test_files = []
         self.candidates = []
         self.accuracy = 0
+        self.precision = -1
 
     def __str__(self) -> str:
         return self.id_subject
@@ -23,5 +22,10 @@ class Subject():
     def set_accuracy(self, accuracy):
         self.accuracy = accuracy
 
+    def set_precision(self, precision):
+        self.precision = precision
+
     def print_statistics(self):
-        return str(self.id_subject) + " " + str(self.candidates) + " Accuracy: "+str.format('%.2f' % self.accuracy) +"%"
+        return str(self.id_subject) + " " + str(self.candidates) + " Precision: "\
+               + str.format('%.2f' % self.precision) + "%" + " Accuracy: "\
+               + str.format('%.2f' % self.accuracy) + "%"

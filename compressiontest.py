@@ -11,20 +11,21 @@ from subject import Subject
 import matplotlib.pyplot as plt
 import numpy as np
 
-def compress_file_gzip(content):
-    return gzip.compress(content)
+
+def compress_file_gzip(content,compression_level=9):
+    return gzip.compress(content, compresslevel=compression_level)
 
 
-def compress_file_bz2(content):
-    return bz2.compress(content)
+def compress_file_bz2(content, compression_level=9):
+    return bz2.compress(content, compresslevel=compression_level)
 
 
-def compress_file_lzma(content):
+def compress_file_lzma(content,compression_level=9):
     return lzma.compress(content)
 
 
-def compress_file_zlib(content):
-    return zlib.compress(content, level=9)
+def compress_file_zlib(content, compression_level=9):
+    return zlib.compress(content, level=compression_level)
 
 
 def read_file_content(file_path):
@@ -35,7 +36,7 @@ def parse_compressor(c_name):
     compressors = {'gzip': compress_file_gzip,
                    'bzip2': compress_file_bz2,
                    'lzma': compress_file_lzma,
-                   'zip': compress_file_zlib}
+                   'zlib': compress_file_zlib}
     return compressors[c_name]
 
 
@@ -45,7 +46,7 @@ def is_directory(directory):
     return directory
 
 
-def create_refs_and_subjects(directory_in_str, compressor):
+def create_refs_and_subjects(directory_in_str, compressor, nr_refs_files):
     refs = {}
     subjects = []
     general_directory = os.fsencode(directory_in_str)
@@ -62,7 +63,7 @@ def create_refs_and_subjects(directory_in_str, compressor):
             for i in imgs:
                 img_dir = os.path.join(sub_dir, i)
                 file = ImageFile(img_dir, compressor)
-                if len(image_files) < 3:
+                if len(image_files) < nr_refs_files:
                     image_files.append(file)
                 new_subject.add_test_file(file)
             refs[dir_name] = image_files
@@ -92,14 +93,33 @@ def plot_matrix(matrix):
     plt.show()
 
 
+def check_nr_ref_files(args):
+    if int(args.nrReferenceFiles) > 10 or int(args.nrReferenceFiles) < 1:
+        print("Invalid number of reference files!")
+        exit(1)
+
+def parse_args():
+
+    parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
+    parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zlib'])
+    """parser.add_argument("-cl", "--compresslevel", help="The compresslevel argument is an integer from 1 to 9 controlling " +
+                                               "the level of compression; 1 is fastest and produces the least" +
+                                               " compression, and 9 is slowest and produces the most compression." +
+                                               " The default is 9"
+                                                , default=9)"""
+    parser.add_argument("-nr", "--nrReferenceFiles", help="compressor to be used", default=3)
+
+    args = parser.parse_args()
+    check_nr_ref_files(args)
+    return args
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
-    parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zip'])
-    args = parser.parse_args()
-
+    args = parse_args()
     compressor = parse_compressor(args.compressor)
-    references, subjects = create_refs_and_subjects(args.directory, compressor)
+    nr_reference_files = int(args.nrReferenceFiles)
+    references, subjects = create_refs_and_subjects(args.directory, compressor, nr_reference_files)
 
     test_results = {}
     for ref in references:
@@ -127,21 +147,26 @@ if __name__ == '__main__':
                           if image in sub.test_files]
         #print(all_test_file_of_subject)
         for candidate in all_test_file_of_subject:
-            sub.add_candidate(candidate)   
+            sub.add_candidate(candidate)
             subject_predicted_id = int(re.search(r'\d+', candidate).group())
             subject_real_id = int(re.search(r'\d+', sub.id_subject).group())
             matrix_confusion[subject_predicted_id-1][subject_real_id-1] += 1
 
     total = sum([sum(f) for f in matrix_confusion])
     avg_accuracy = 0
+    avg_precision = 0
     for i in range(len(subjects)):
         tp = matrix_confusion[i][i]
         fp = sum(matrix_confusion[i])-tp
         fn = sum([d[0] for d in matrix_confusion])-tp
         tn = total - (tp+fp+fn)
         accuracy_subject = ((tp+tn)/total)*100
+        precision_subject = (tp/(tp + fp))*100
+        subjects[i].set_precision(precision_subject)
         subjects[i].set_accuracy(accuracy_subject)
         print(subjects[i].print_statistics())
         avg_accuracy += accuracy_subject
+        avg_precision += precision_subject
+    print("Average precision: " + str.format('%.2f' % float(avg_precision / len(subjects))) + "%")
     print("Average accuracy: "+str.format('%.2f' % float(avg_accuracy/len(subjects)))+"%")
     plot_matrix(matrix_confusion)
