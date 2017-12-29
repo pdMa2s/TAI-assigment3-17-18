@@ -5,7 +5,6 @@ import lzma
 import zlib
 import re
 from io import BytesIO
-from PIL import Image
 from image_file import ImageFile
 from ncd import NCD
 import os
@@ -29,10 +28,12 @@ def compress_file_lzma(content,compression_level=9):
 def compress_file_zlib(content, compression_level=9):
     return zlib.compress(content, level=compression_level)
 
+
 def compress_file_jpeg_png(image, type):
     buffer = BytesIO()
     image.save(buffer, type)
     return buffer.tell()
+
 
 def parse_compressor(c_name):
     compressors = {'gzip': compress_file_gzip,
@@ -75,6 +76,7 @@ def create_refs_and_subjects(directory_in_str, compressor, compressor_type, nr_r
             subjects.append(new_subject)
     return refs, subjects
 
+
 def plot_matrix(matrix):
     H = np.array(matrix)
     fig = plt.figure(figsize=(10, 6), dpi=90)
@@ -98,8 +100,8 @@ def check_nr_ref_files(nr_refs):
         print("Invalid number of reference files!")
         exit(1)
 
-def parse_args():
 
+def parse_args():
     parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
     parser.add_argument("compressor", help="compressor to be used", choices=['gzip', 'bzip2', 'lzma', 'zlib', 'jpeg', 'png'])
     """parser.add_argument("-cl", "--compresslevel", help="The compresslevel argument is an integer from 1 to 9 controlling " +
