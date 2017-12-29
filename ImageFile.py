@@ -1,4 +1,4 @@
-from PIL import Image
+#from PIL import Image
 
 
 class ImageFile:
@@ -14,8 +14,8 @@ class ImageFile:
         return self.__str__()
 
     def read_image(self, compressor, compressor_type):
-        if compressor_type == 'png' or compressor_type == 'jpeg':
-            return Image.open(self.folder)
+        #if compressor_type == 'png' or compressor_type == 'jpeg':
+            #return Image.open(self.folder)
         return open(self.folder, 'rb').read()
 
     def get_compress_size(self, compressor, compressor_type):
