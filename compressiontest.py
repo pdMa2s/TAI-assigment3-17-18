@@ -5,7 +5,6 @@ import lzma
 import zlib
 import re
 from io import BytesIO
-from PIL import Image
 from image_file import ImageFile
 from ncd import NCD
 import os
@@ -55,7 +54,10 @@ def create_refs_and_subjects(directory_in_str, compressor, compressor_type, nr_r
     subjects = []
     general_directory = os.fsencode(directory_in_str)
 
-    for dir in os.listdir(general_directory):
+    list_dir = os.listdir(general_directory)
+    list_dir.sort()
+
+    for dir in list_dir:
         dir_name = os.fsdecode(dir)
         sub_dir = os.path.join(directory_in_str, dir_name)
         if os.path.isdir(sub_dir):
