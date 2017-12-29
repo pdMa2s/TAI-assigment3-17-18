@@ -5,7 +5,6 @@ class Subject:
         self.test_files = []
         self.candidates = []
         self.accuracy = -1
-        self.precision = -1
         self.recall = -1
 
     def __str__(self) -> str:
