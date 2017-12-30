@@ -109,11 +109,6 @@ def parse_args():
     parser.add_argument("directory", help="directory that contains the image files", type=is_directory)
     parser.add_argument("compressor", help="compressor to be used",
                         choices=['gzip', 'bzip2', 'lzma', 'zlib', 'jpeg', 'png'])
-    """parser.add_argument("-cl", "--compresslevel", help="The compresslevel argument is an integer from 1 to 9 controlling " +
-                                               "the level of compression; 1 is fastest and produces the least" +
-                                               " compression, and 9 is slowest and produces the most compression." +
-                                               " The default is 9"
-                                                , default=9)"""
     parser.add_argument("-nr", "--nrReferenceFiles", help="number of reference files to be used", default=3)
     parser.add_argument("-sct", "--subjectClassificationType", help="type of subject classification to be used",
                             choices=['mean',"superImage"], default='mean')
