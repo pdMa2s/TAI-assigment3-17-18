@@ -267,3 +267,48 @@ s39 ['s39', 's22', 's22', 's33', 's26', 's19', 's35'] Recall: 14.29% Accuracy: 9
 s40 ['s40', 's40', 's09', 's03', 's38', 's03', 's38'] Recall: 28.57% Accuracy: 96.07%
 Average recall: 55.36%
 Average accuracy: 97.77%
+
+NCCD
+
+s01 ['s01', 's01', 's01', 's01', 's01', 's01', 's01'] Recall: 100.00% Accuracy: 89.29%
+s02 ['s02', 's02', 's02', 's02', 's02', 's02', 's02'] Recall: 100.00% Accuracy: 100.00%
+s03 ['s03', 's03', 's03', 's23', 's23', 's03', 's03'] Recall: 71.43% Accuracy: 95.71%
+s04 ['s23', 's23', 's23', 's23', 's04', 's04', 's23'] Recall: 28.57% Accuracy: 97.86%
+s05 ['s05', 's05', 's05', 's05', 's05', 's05', 's05'] Recall: 100.00% Accuracy: 92.86%
+s06 ['s06', 's06', 's06', 's06', 's06', 's06', 's06'] Recall: 100.00% Accuracy: 100.00%
+s07 ['s35', 's17', 's07', 's07', 's07', 's07', 's01'] Recall: 57.14% Accuracy: 98.93%
+s08 ['s08', 's08', 's08', 's08', 's08', 's08', 's08'] Recall: 100.00% Accuracy: 100.00%
+s09 ['s03', 's03', 's23', 's23', 's23', 's23', 's23'] Recall: 0.00% Accuracy: 97.50%
+s10 ['s10', 's10', 's10', 's10', 's10', 's10', 's10'] Recall: 100.00% Accuracy: 100.00%
+s11 ['s11', 's11', 's11', 's11', 's11', 's11', 's11'] Recall: 100.00% Accuracy: 100.00%
+s12 ['s05', 's25', 's03', 's03', 's05', 's03', 's12'] Recall: 14.29% Accuracy: 97.86%
+s13 ['s13', 's13', 's13', 's13', 's13', 's13', 's13'] Recall: 100.00% Accuracy: 100.00%
+s14 ['s14', 's01', 's14', 's14', 's01', 's01', 's14'] Recall: 57.14% Accuracy: 98.93%
+s15 ['s15', 's35', 's15', 's35', 's15', 's35', 's35'] Recall: 42.86% Accuracy: 98.57%
+s16 ['s19', 's19', 's01', 's24', 's01', 's24', 's01'] Recall: 0.00% Accuracy: 97.50%
+s17 ['s01', 's17', 's17', 's01', 's01', 's17', 's01'] Recall: 42.86% Accuracy: 98.21%
+s18 ['s05', 's05', 's05', 's05', 's05', 's05', 's05'] Recall: 0.00% Accuracy: 97.50%
+s19 ['s19', 's19', 's19', 's19', 's19', 's19', 's19'] Recall: 100.00% Accuracy: 99.29%
+s20 ['s03', 's01', 's23', 's23', 's04', 's01', 's20'] Recall: 14.29% Accuracy: 97.86%
+s21 ['s01', 's24', 's01', 's24', 's39', 's01', 's33'] Recall: 0.00% Accuracy: 97.50%
+s22 ['s22', 's22', 's22', 's22', 's22', 's22', 's22'] Recall: 100.00% Accuracy: 100.00%
+s23 ['s03', 's23', 's03', 's23', 's23', 's23', 's23'] Recall: 71.43% Accuracy: 91.79%
+s24 ['s24', 's24', 's24', 's24', 's24', 's24', 's24'] Recall: 100.00% Accuracy: 95.36%
+s25 ['s25', 's05', 's25', 's25', 's25', 's25', 's25'] Recall: 85.71% Accuracy: 99.29%
+s26 ['s23', 's23', 's05', 's05', 's23', 's26', 's05'] Recall: 14.29% Accuracy: 97.86%
+s27 ['s27', 's27', 's27', 's27', 's27', 's27', 's27'] Recall: 100.00% Accuracy: 100.00%
+s28 ['s01', 's01', 's23', 's01', 's23', 's01', 's23'] Recall: 0.00% Accuracy: 97.50%
+s29 ['s29', 's29', 's30', 's30', 's30', 's29', 's29'] Recall: 57.14% Accuracy: 98.93%
+s30 ['s30', 's39', 's30', 's39', 's30', 's30', 's30'] Recall: 71.43% Accuracy: 98.21%
+s31 ['s24', 's24', 's39', 's39', 's31', 's39', 's24'] Recall: 14.29% Accuracy: 97.86%
+s32 ['s32', 's32', 's01', 's24', 's40', 's24', 's05'] Recall: 28.57% Accuracy: 98.21%
+s33 ['s33', 's33', 's33', 's33', 's39', 's24', 's33'] Recall: 71.43% Accuracy: 98.93%
+s34 ['s34', 's24', 's34', 's24', 's34', 's34', 's34'] Recall: 71.43% Accuracy: 99.29%
+s35 ['s35', 's35', 's35', 's35', 's35', 's35', 's05'] Recall: 85.71% Accuracy: 97.86%
+s36 ['s01', 's36', 's24', 's01', 's01', 's01', 's01'] Recall: 14.29% Accuracy: 97.86%
+s37 ['s01', 's01', 's01', 's37', 's01', 's37', 's37'] Recall: 42.86% Accuracy: 98.57%
+s38 ['s38', 's38', 's38', 's03', 's38', 's23', 's03'] Recall: 57.14% Accuracy: 98.93%
+s39 ['s39', 's39', 's39', 's39', 's39', 's39', 's39'] Recall: 100.00% Accuracy: 97.50%
+s40 ['s05', 's05', 's40', 's05', 's40', 's05', 's05'] Recall: 28.57% Accuracy: 97.86%
+Average recall: 58.57%
+Average accuracy: 97.93%

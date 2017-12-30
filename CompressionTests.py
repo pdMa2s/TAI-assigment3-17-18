@@ -79,7 +79,7 @@ def plot_matrix(matrix):
     plt.show()
 
 
-def calculate_metrics(matrix_confusion):
+def calculate_metrics(matrix_confusion, subjects):
     total = sum([sum(f) for f in matrix_confusion])
     avg_accuracy = 0
     avg_recall = 0
@@ -150,13 +150,13 @@ if __name__ == '__main__':
 
     print('NCD')
     matrix_confusion_ncd = make_matrix_confusion(subjects, dic_min, True)
-    calculate_metrics(matrix_confusion_ncd)
+    calculate_metrics(matrix_confusion_ncd, subjects)
     plot_matrix(matrix_confusion_ncd)
 
     nccd = NCCD('results_NCCD.txt')
     print('NCCD')
-    matrix_confusion_nccd = make_matrix_confusion(subjects, nccd.dict)
-    calculate_metrics(matrix_confusion_nccd)
+    matrix_confusion_nccd = make_matrix_confusion(nccd.subjects, nccd.dict)
+    calculate_metrics(matrix_confusion_nccd, nccd.subjects)
     plot_matrix(matrix_confusion_nccd)
 
 
