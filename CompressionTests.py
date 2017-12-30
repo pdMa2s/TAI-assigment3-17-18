@@ -61,12 +61,12 @@ def make_matrix_confusion(subjects, dic_min, ncd=False):
     return matrix_confusion
 
 
-def plot_matrix(matrix):
+def plot_matrix(matrix, header):
     H = np.array(matrix)
     fig = plt.figure(figsize=(10, 6), dpi=90)
 
     ax = fig.add_subplot(111)
-    ax.set_title('confusion matrix')
+    ax.set_title('confusion matrix' + header)
     plt.imshow(H)
     ax.set_aspect('equal')
 
@@ -100,7 +100,7 @@ def calculate_metrics(matrix_confusion, subjects):
 
 
 def check_nr_ref_files(nr_refs):
-    if nr_refs > 10 or nr_refs < 1:
+    if nr_refs > 9 or nr_refs < 1:
         print("Invalid number of reference files!")
         exit(1)
 
@@ -149,14 +149,15 @@ if __name__ == '__main__':
     #print(dic_min)
 
     print('NCD')
+    print('Number of reference files:', args.nrReferenceFiles)
     matrix_confusion_ncd = make_matrix_confusion(subjects, dic_min, True)
     calculate_metrics(matrix_confusion_ncd, subjects)
-    plot_matrix(matrix_confusion_ncd)
+    plot_matrix(matrix_confusion_ncd, "\nNCD")
 
     nccd = NCCD('results_NCCD.txt')
     print('NCCD')
     matrix_confusion_nccd = make_matrix_confusion(nccd.subjects, nccd.dict)
     calculate_metrics(matrix_confusion_nccd, nccd.subjects)
-    plot_matrix(matrix_confusion_nccd)
+    plot_matrix(matrix_confusion_nccd, "\nNCCD")
 
 
