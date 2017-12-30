@@ -129,7 +129,6 @@ if __name__ == '__main__':
 
     test_results = {}
     for ref in references:
-        print(ref)
         test_results[ref] = []
         for sub in subjects:
             means = NCD(sub.test_files, references[ref], compressor, args.compressor, classification_type).compute_ncd()
