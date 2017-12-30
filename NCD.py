@@ -15,7 +15,6 @@ class NCD:
             y = targ.compress_file_size
             ncd_total = 0
             for ref in self.ref_files:
-                concat_size = 0
                 if self.compressor_type == 'jpeg' or self.compressor_type == 'png':
                     concat_size = self.compressor(self.concate_images(ref.content_image, targ.content_image), self.compressor_type)
                 else:

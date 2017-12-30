@@ -13,7 +13,7 @@ class ImageFile:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def read_image(self, compressor, compressor_type):
+    def read_image(self, compressor_type):
         if compressor_type == 'png' or compressor_type == 'jpeg':
             return Image.open(self.folder)
         return open(self.folder, 'rb').read()
