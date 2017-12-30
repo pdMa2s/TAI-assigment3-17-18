@@ -115,6 +115,8 @@ def parse_args():
                                                " The default is 9"
                                                 , default=9)"""
     parser.add_argument("-nr", "--nrReferenceFiles", help="number of reference files to be used", default=3)
+    parser.add_argument("-sct", "--subjectClassificationType", help="type of subject classification to be used",
+                            choices=['mean',"superImage"], default='mean')
 
     args = parser.parse_args()
 
@@ -127,13 +129,15 @@ if __name__ == '__main__':
     args = parse_args()
     compressor = Compressors.parse_compressor(args.compressor)
     nr_reference_files = int(args.nrReferenceFiles)
+    classification_type = args.subjectClassificationType
     references, subjects = create_refs_and_subjects(args.directory, compressor, args.compressor, nr_reference_files)
 
     test_results = {}
     for ref in references:
+        print(ref)
         test_results[ref] = []
         for sub in subjects:
-            means = NCD(sub.test_files, references[ref], compressor, args.compressor).mean_ncd()
+            means = NCD(sub.test_files, references[ref], compressor, args.compressor, classification_type).compute_ncd()
             test_results[ref] += means
     # print(test_results)
 
