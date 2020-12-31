@@ -14,10 +14,13 @@ Kolmogorov complexity, the Normalized Compression Distance (NCD) and the Normali
 
 How to run: 
 
+```bash
 $ python CompressionTests.py -h
+```
 
 Check the usage USAGE prompt and follow the instructions
 
 Example:
-
+```bash
 $ python CompressionTests.py orl_faces bzip2 -nr 3
+```
