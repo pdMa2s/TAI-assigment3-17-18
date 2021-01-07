@@ -1,4 +1,4 @@
-# face-identifier
+# subject-identifier
 
 University of Aveiro
 
